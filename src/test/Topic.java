@@ -13,15 +13,15 @@ public class Topic {
         this.name = name;
     }
 
-    public void subscribe(Agent a){
-        if (a == null || subs.contains(a)) {
+    public void subscribe(Agent agent){
+        if (agent == null || subs.contains(agent)) {
             return;
         }
-        subs.add(a);
+        subs.add(agent);
     }
 
-    public void unsubscribe(Agent a){
-        subs.remove(a);
+    public void unsubscribe(Agent agent){
+        subs.remove(agent);
     }
 
     public void publish(Message msg){
@@ -30,15 +30,15 @@ public class Topic {
         }
     }
 
-    public void addPublisher(Agent a){
-        if (a == null || pubs.contains(a)) {
+    public void addPublisher(Agent agent){
+        if (agent == null || pubs.contains(agent)) {
             return;
         }
-        pubs.add(a);
+        pubs.add(agent);
     }
 
-    public void removePublisher(Agent a){
-        pubs.remove(a);
+    public void removePublisher(Agent agent){
+        pubs.remove(agent);
     }
 
     public List<Agent> getSubs(){

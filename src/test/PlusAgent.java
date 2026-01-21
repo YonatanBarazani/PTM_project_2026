@@ -1,32 +1,48 @@
 package test;
 
-import java.util.function.BinaryOperator;
 import test.TopicManagerSingleton.TopicManager;
 
-public class BinOpAgent implements Agent {
-    private final String name;
+public class PlusAgent implements Agent {
+
+    private final String[] subs;
+    private final String[] pubs;
 
     private final Topic aTopic;
     private final Topic bTopic;
     private final Topic resTopic;
 
-    private final BinaryOperator<Double> op;
+    private double aVal;
+    private double bVal;
 
     private boolean aReady;
     private boolean bReady;
 
-    private double aVal;
-    private double bVal;
+    public PlusAgent(String[] subs, String[] pubs) {
+        this.subs = subs;
+        this.pubs = pubs;
 
-    public BinOpAgent(String name, String aTopic, String bTopic, String resTopic, BinaryOperator<Double> op) {
-        this.name = name;
-        this.op = op;
-        
         TopicManager tm = TopicManagerSingleton.get();
 
-        this.aTopic = tm.getTopic(aTopic);
-        this.bTopic = tm.getTopic(bTopic);
-        this.resTopic = tm.getTopic(resTopic);
+        String aName = "";
+        String bName = "";
+
+        if (subs != null) {
+            if (subs.length > 0) {
+                aName = subs[0];
+            }
+            if (subs.length > 1) {
+                bName = subs[1];
+            }
+        }
+
+        String resName = "";
+        if (pubs != null && pubs.length > 0) {
+            resName = pubs[0];
+        }
+
+        this.aTopic = tm.getTopic(aName);
+        this.bTopic = tm.getTopic(bName);
+        this.resTopic = tm.getTopic(resName);
 
         this.aTopic.subscribe(this);
         this.bTopic.subscribe(this);
@@ -37,7 +53,7 @@ public class BinOpAgent implements Agent {
 
     @Override
     public String getName() {
-        return name;
+        return "PlusAgent";
     }
 
     @Override
@@ -50,11 +66,7 @@ public class BinOpAgent implements Agent {
 
     @Override
     public void callback(String topic, Message msg) {
-        if (msg == null) {
-            return;
-        }
-
-        if (Double.isNaN(msg.asDouble)) {
+        if (msg == null || Double.isNaN(msg.asDouble)) {
             return;
         }
 
@@ -62,19 +74,17 @@ public class BinOpAgent implements Agent {
             aVal = msg.asDouble;
             aReady = true;
         }
-
         else if (topic.equals(bTopic.name)) {
             bVal = msg.asDouble;
             bReady = true;
         }
-        
         else {
             return;
         }
 
         if (aReady && bReady) {
-            double val = op.apply(aVal, bVal);
-            resTopic.publish(new Message(val));
+            double sum = aVal + bVal;
+            resTopic.publish(new Message(sum));
         }
     }
 

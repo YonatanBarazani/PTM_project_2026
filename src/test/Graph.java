@@ -8,6 +8,7 @@ import java.util.List;
 import test.TopicManagerSingleton.TopicManager;
 
 public class Graph extends ArrayList<Node> {
+
     public boolean hasCycles() {
         for (int i = 0; i < size(); i++) {
             if (get(i).hasCycles()) {
@@ -24,43 +25,43 @@ public class Graph extends ArrayList<Node> {
         Map<String, Node> nodes = new HashMap<>();
 
         for (Topic t : tm.getTopics()) {
-            String tn = "T" + t.name;
-            nodes.put(tn, new Node(tn));
+            String nodeName = "T" + t.name;
+            nodes.put(nodeName, new Node(nodeName));
         }
 
         for (Topic t : tm.getTopics()) {
-            Node tn = nodes.get("T" + t.name);
+            Node topicNode = nodes.get("T" + t.name);
             List<Agent> subs = t.getSubs();
 
             for (int i = 0; i < subs.size(); i++) {
-                Agent a = subs.get(i);
-                String an = "A" + a.getName();
-                
-                Node anNode = nodes.get(an);
-                if (anNode == null) {
-                    anNode = new Node(an);
-                    nodes.put(an, anNode);
+                Agent agent = subs.get(i);
+                String nodeName = "A" + agent.getName();
+
+                Node agentNode = nodes.get(nodeName);
+                if (agentNode == null) {
+                    agentNode = new Node(nodeName);
+                    nodes.put(nodeName, agentNode);
                 }
 
-                tn.addEdge(anNode);
+                topicNode.addEdge(agentNode);
             }
         }
 
         for (Topic t : tm.getTopics()) {
-            Node tn = nodes.get("T" + t.name);
-
+            Node topicNode = nodes.get("T" + t.name);
             List<Agent> pubs = t.getPubs();
-            for (int i = 0; i < pubs.size(); i++) {
-                Agent a = pubs.get(i);
-                String an = "A" + a.getName();
 
-                Node anNode = nodes.get(an);
-                if (anNode == null) {
-                    anNode = new Node(an);
-                    nodes.put(an, anNode);
+            for (int i = 0; i < pubs.size(); i++) {
+                Agent agent = pubs.get(i);
+                String nodeName = "A" + agent.getName();
+
+                Node agentNode = nodes.get(nodeName);
+                if (agentNode == null) {
+                    agentNode = new Node(nodeName);
+                    nodes.put(nodeName, agentNode);
                 }
 
-                anNode.addEdge(tn);
+                agentNode.addEdge(topicNode);
             }
         }
 

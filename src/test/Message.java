@@ -15,8 +15,7 @@ public class Message {
         else {
             this.asText = msg;
         }
-
-       this.data = this.asText.getBytes();
+        this.data = this.asText.getBytes();
 
         double num;
         try {
